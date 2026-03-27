@@ -16,6 +16,10 @@ class MeasurementApplicationTests {
         MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(12.2);
         MeasurementApplication.Feet f2 = new MeasurementApplication.Feet(12.2);
         assertEquals(f1, f2);
+
+        MeasurementApplication.Inch i1 = new MeasurementApplication.Inch(12.2);
+        MeasurementApplication.Inch i2 = new MeasurementApplication.Inch(12.2);
+        assertEquals(i1,i2);
     }
 
     @Test
@@ -23,6 +27,10 @@ class MeasurementApplicationTests {
         MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(12.2);
         MeasurementApplication.Feet f2 = new MeasurementApplication.Feet(13.2);
         assertNotEquals(f1, f2);
+
+        MeasurementApplication.Inch i1 = new MeasurementApplication.Inch(12.2);
+        MeasurementApplication.Inch i2 = new MeasurementApplication.Inch(13.2);
+        assertNotEquals(i1,i2);
     }
 
     @Test
@@ -30,6 +38,10 @@ class MeasurementApplicationTests {
         MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(12.2);
         //  assertNotNull(f1);
         assertFalse(f1.equals(null));
+
+        MeasurementApplication.Inch i1= new MeasurementApplication.Inch(12.2);
+        assertFalse(i1.equals(null));
+
     }
 
     @Test
@@ -37,11 +49,19 @@ class MeasurementApplicationTests {
         MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(12.2);
         String name = "NR";
         assertFalse(f1.equals(name));
+
+        MeasurementApplication.Inch i1 = new MeasurementApplication.Inch(12.2);
+       // String name1 = "HR";
+
+        assertFalse(i1.equals(name));
     }
 
     @Test
     void testEquality_SameReference() {
         MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(10.1);
         assertTrue(f1.equals(f1));
+
+        MeasurementApplication.Inch i1 = new MeasurementApplication.Inch(10.1);
+        assertTrue(i1.equals(i1));
     }
 }
