@@ -13,7 +13,7 @@ public class MeasurementApplication {
 
         SpringApplication.run(MeasurementApplication.class, args);
 
-        try {
+
             double value1 = 1.0;
             LengthUnit unit1 = LengthUnit.FEET;
 
@@ -23,15 +23,7 @@ public class MeasurementApplication {
             QuantityLength quantityLength = new QuantityLength(value1,unit1);
             QuantityLength quantityLength1 = new QuantityLength(value2, unit2);
 
-            if (quantityLength.equals(quantityLength1)) {
-                System.out.println("Equal");
 
-            }else {
-                System.out.println("Not equal");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
 
 
