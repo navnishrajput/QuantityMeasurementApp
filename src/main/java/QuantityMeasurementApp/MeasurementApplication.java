@@ -1,59 +1,39 @@
 package QuantityMeasurementApp;
 
+import com.qunantity.measurement.enums.LengthUnit;
+import com.qunantity.measurement.model.QuantityLength;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class MeasurementApplication {
 
-    static class Feet{
-        private final double value;
-        public Feet(double value){
-            this.value = value;
-        }
-        public boolean equals(Object obj){
-            if(this == obj) return  true;
-            if(obj == null || getClass() != obj.getClass()){
-                return  false;
-            }
-            Feet other = (Feet)obj;
-            return Double . compare(this.value, other.value) ==0;
-        }
-    }
-
-
-    static class Inch{
-        private final double value;
-        public Inch(double value){
-            this.value = value;
-        }
-        public boolean equals(Object obj){
-            if(this == obj) return  true;
-            if(obj == null || getClass() != obj.getClass()){
-                return  false;
-            }
-            Inch other = (Inch)obj;
-            return Double . compare(this.value, other.value) ==0;
-        }
-
-    }
-
     public static void main(String[] args) {
 
 
         SpringApplication.run(MeasurementApplication.class, args);
-        System.out.println("Feet answer: ");
-        Feet f1 = new Feet(34.5);
-        Feet f2 = new Feet(34.5);
-        System.out.print("Answer: ");
-        System.out.println(f1.equals(f2));
+
+        try {
+            double value1 = 1.0;
+            LengthUnit unit1 = LengthUnit.FEET;
+
+            double value2 = 12.0;
+            LengthUnit unit2 = LengthUnit.INCH;
+
+            QuantityLength quantityLength = new QuantityLength(value1,unit1);
+            QuantityLength quantityLength1 = new QuantityLength(value2, unit2);
+
+            if (quantityLength.equals(quantityLength1)) {
+                System.out.println("Equal");
+
+            }else {
+                System.out.println("Not equal");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 
-        System.out.println("Inch answer: ");
-        Inch i1 = new Inch(12.2);
-        Inch i2 = new Inch(12.2);
-        System.out.print("Answer: ");
-        System.out.println(i1.equals(i2));
 
     }
 

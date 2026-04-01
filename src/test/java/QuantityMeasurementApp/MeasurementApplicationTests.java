@@ -1,67 +1,97 @@
 package QuantityMeasurementApp;
 
+import com.qunantity.measurement.enums.LengthUnit;
+import com.qunantity.measurement.model.QuantityLength;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class MeasurementApplicationTests {
+class QuantityLengthTest {
 
+    // 1
     @Test
-    void contextLoads() {
+    void testEquality_FeetToFeet_SameValue() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength q2 = new QuantityLength(1.0, LengthUnit.FEET);
+
+        assertTrue(q1.equals(q2));
     }
 
+    // 2
     @Test
-    void testEquality_SameValue() {
-        MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(12.2);
-        MeasurementApplication.Feet f2 = new MeasurementApplication.Feet(12.2);
-        assertEquals(f1, f2);
+    void testEquality_InchToInch_SameValue() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.INCH);
+        QuantityLength q2 = new QuantityLength(1.0, LengthUnit.INCH);
 
-        MeasurementApplication.Inch i1 = new MeasurementApplication.Inch(12.2);
-        MeasurementApplication.Inch i2 = new MeasurementApplication.Inch(12.2);
-        assertEquals(i1,i2);
+        assertTrue(q1.equals(q2));
     }
 
+    // 3
     @Test
-    void testEquality_DifferentValue() {
-        MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(12.2);
-        MeasurementApplication.Feet f2 = new MeasurementApplication.Feet(13.2);
-        assertNotEquals(f1, f2);
+    void testEquality_FeetToInch_EquivalentValue() {
+        QuantityLength feet = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength inch = new QuantityLength(12.0, LengthUnit.INCH);
 
-        MeasurementApplication.Inch i1 = new MeasurementApplication.Inch(12.2);
-        MeasurementApplication.Inch i2 = new MeasurementApplication.Inch(13.2);
-        assertNotEquals(i1,i2);
+        assertTrue(feet.equals(inch));
     }
 
+    // 4
     @Test
-    void testEquality_NullComparison() {
-        MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(12.2);
-        //  assertNotNull(f1);
-        assertFalse(f1.equals(null));
+    void testEquality_InchToFeet_EquivalentValue() {
+        QuantityLength inch = new QuantityLength(12.0, LengthUnit.INCH);
+        QuantityLength feet = new QuantityLength(1.0, LengthUnit.FEET);
 
-        MeasurementApplication.Inch i1= new MeasurementApplication.Inch(12.2);
-        assertFalse(i1.equals(null));
-
+        assertTrue(inch.equals(feet));
     }
 
+    // 5
     @Test
-    void testEquality_NonNumericInput() {
-        MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(12.2);
-        String name = "NR";
-        assertFalse(f1.equals(name));
+    void testEquality_FeetToFeet_DifferentValue() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength q2 = new QuantityLength(2.0, LengthUnit.FEET);
 
-        MeasurementApplication.Inch i1 = new MeasurementApplication.Inch(12.2);
-       // String name1 = "HR";
-
-        assertFalse(i1.equals(name));
+        assertFalse(q1.equals(q2));
     }
 
+    // 6
+    @Test
+    void testEquality_InchToInch_DifferentValue() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.INCH);
+        QuantityLength q2 = new QuantityLength(2.0, LengthUnit.INCH);
+
+        assertFalse(q1.equals(q2));
+    }
+
+    // 7
+    @Test
+    void testEquality_InvalidUnit() {
+        // In your design, invalid unit = null (since enum restricts values)
+        assertThrows(IllegalArgumentException.class, () -> {
+            new QuantityLength(1.0, null);
+        });
+    }
+
+    // 8
+    @Test
+    void testEquality_NullUnit() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+
+        assertNotEquals(null, q1);
+    }
+
+    // 9
     @Test
     void testEquality_SameReference() {
-        MeasurementApplication.Feet f1 = new MeasurementApplication.Feet(10.1);
-        assertTrue(f1.equals(f1));
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
 
-        MeasurementApplication.Inch i1 = new MeasurementApplication.Inch(10.1);
-        assertTrue(i1.equals(i1));
+        assertTrue(q1.equals(q1));
+    }
+
+    // 10
+    @Test
+    void testEquality_NullComparison() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+
+        assertFalse(q1.equals(null));
     }
 }
