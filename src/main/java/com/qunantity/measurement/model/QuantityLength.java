@@ -4,8 +4,8 @@ import com.qunantity.measurement.enums.LengthUnit;
 
 public class QuantityLength {
 
-    private double value;
-    private LengthUnit unit;
+    private final double value;
+    private final LengthUnit unit;
 
 
     public QuantityLength(double value, LengthUnit unit) {
@@ -22,14 +22,12 @@ public class QuantityLength {
 
         if (this == obj) return true;
 
-        if (obj == null || getClass() != obj.getClass()) return false;
+       // if (obj == null || getClass() != obj.getClass()) return false;
+        if(!(obj instanceof QuantityLength)) return false;
         QuantityLength other = (QuantityLength) obj;
 
-        double thisInFeet = this.unit.toFeet(this.value);
-        double otherInFeet = other.unit.toFeet(other.value);
-
-
-
+        double thisInFeet = this.toFeet();
+        double otherInFeet = other.toFeet();
         return Double.compare(thisInFeet,otherInFeet)==0;
     }
 
