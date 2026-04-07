@@ -10,6 +10,8 @@ public enum LengthUnit {
 
     CM(0.0328084);
 
+
+
     private final double toFeetFactor;
 
 
@@ -28,4 +30,7 @@ public enum LengthUnit {
 
     }
 
+    public double fromFeet(double value) {
+        return value/toFeetFactor;
+    }
 }
