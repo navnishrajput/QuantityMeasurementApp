@@ -30,18 +30,16 @@ public class QuantityLength {
 
         double thisInFeet = this.toFeet();
         double otherInFeet = other.toFeet();
-        return Double.compare(thisInFeet,otherInFeet)==0;
+        return Math.abs(thisInFeet - otherInFeet) < EPSILON;
     }
  public double toConvert(LengthUnit targetUnit){
     return  convert(this.value, this.unit, targetUnit);
         
  }
+ 
+    public static double convert(double value, LengthUnit sourceUnit, LengthUnit targetUnit) {
 
-
-
-    public static double convert(double value, LengthUnit sorceUnit, LengthUnit targetUnit) {
-
-        if (sorceUnit == null || targetUnit == null) {
+        if (sourceUnit == null || targetUnit == null) {
             throw new IllegalArgumentException("unit should not be empty");
             
         }
@@ -49,11 +47,36 @@ public class QuantityLength {
 throw new IllegalArgumentException("Invaild numric value!!");
             
         }
-        double valueInFeet = sorceUnit.toFeet(value);
+        double valueInFeet = sourceUnit.toFeet(value);
 
         return targetUnit.fromFeet(valueInFeet);
     }
 
+
+    public QuantityLength add(QuantityLength other) {
+        if (other == null) throw new IllegalArgumentException("Operand cannot be null");
+
+
+        double sumInFeet = this.toFeet() + other.toFeet();
+
+        double resultValue = this.unit.fromFeet(sumInFeet);
+
+        return new QuantityLength(resultValue, this.unit);
+    }
+
+    public static QuantityLength add(QuantityLength l1, QuantityLength l2) {
+        if (l1 == null || l2 == null) throw new IllegalArgumentException("Operands cannot be null");
+        return l1.add(l2);
+    }
+
+
+    public double getValue() {
+        return value;
+    }
+
+    public LengthUnit getUnit() {
+        return unit;
+    }
 
 
 }
