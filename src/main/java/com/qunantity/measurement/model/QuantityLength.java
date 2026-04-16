@@ -6,40 +6,41 @@ public class QuantityLength {
 
     private final double value;
     private final LengthUnit unit;
+    private final double EPSILON = 1e-6;
 
-    private final double EPSILON=1e-6;
     public QuantityLength(double value, LengthUnit unit) {
         if (unit == null) {
-            throw new IllegalArgumentException("Unit cannot be null");
+            throw new IllegalArgumentException("unit can not null ");
+        }
+        if (!Double.isFinite(value)) {
+            throw new IllegalArgumentException("Invalid numeric value");
         }
         this.value = value;
         this.unit = unit;
     }
 
+    // Delegate conversion to the Unit class
     public double toFeet() {
-        return unit.toFeet(value);
+        return unit.convertToBaseUnit(value);
     }
 
+    // Delegate conversion logic to the Unit class (UC8 Requirement)
     public double toConvert(LengthUnit targetUnit) {
-        return convert(this.value,this.unit,targetUnit);
+        return convert(this.value, this.unit, targetUnit);
     }
 
     public static double convert(double value, LengthUnit sourceUnit, LengthUnit targetUnit) {
-
         if (sourceUnit == null || targetUnit == null) {
             throw new IllegalArgumentException("Source/Target unit cannot be null");
         }
-
-        if (Double.isNaN(value) ||Double.isInfinite(value)) {
-            throw new IllegalArgumentException("Invalid numeric value");
+        if (!Double.isFinite(value)) {
+            throw new IllegalArgumentException("Invaild numric value!!");
         }
 
-
-        double valueInFeet = sourceUnit.toFeet(value);
-
-        return targetUnit.fromFeet(valueInFeet);
+        // Logic moved to LengthUnit
+        double valueInFeet = sourceUnit.convertToBaseUnit(value);
+        return targetUnit.convertFromBaseUnit(valueInFeet);
     }
-
 
     @Override
     public boolean equals(Object obj) {
@@ -54,37 +55,37 @@ public class QuantityLength {
         return Math.abs(thisInFeet - otherInFeet) < EPSILON;
     }
 
-    @Override
-    public String toString() {
-        return value + " " + unit.name();
-    }
-
-    private double toBaseUnit() {
-        return unit.toFeet(value);
-    }
-
-
-    public QuantityLength add(QuantityLength other,LengthUnit targetUnit) {
-        if (other == null || targetUnit==null) {
-            throw new IllegalArgumentException("Second quantity and targetUnit  must not be null");
+    // UC8: Standard addition with target unit
+    public QuantityLength add(QuantityLength other, LengthUnit targetUnit) {
+        if (other == null || targetUnit == null) {
+            throw new IllegalArgumentException("Second quantity and targetUnit must not be null");
         }
-
         if (!Double.isFinite(other.value)) {
             throw new IllegalArgumentException("Invalid numeric value");
         }
 
-        double thisInFeet = this.toBaseUnit();
-        double otherInFeet = other.toBaseUnit();
-
-        double sumInFeet = thisInFeet + otherInFeet;
-
-        double resultValue = targetUnit.fromFeet(sumInFeet);
+        // Delegate math to the Units
+        double sumInFeet = this.toFeet() + other.toFeet();
+        double resultValue = targetUnit.convertFromBaseUnit(sumInFeet);
 
         return new QuantityLength(resultValue, targetUnit);
     }
 
+    // Convenience method using first operand unit as target
     public QuantityLength add(QuantityLength other) {
-        return add(other,this.unit);
+        return add(other, this.unit);
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public LengthUnit getUnit() {
+        return unit;
+    }
+
+    @Override
+    public String toString() {
+        return value + " " + unit.name();
     }
 }
-

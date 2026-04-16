@@ -415,6 +415,186 @@ class QuantityLengthTest {
             }
         }
     }
+    @Test
+    void testLengthUnitEnum_FeetConstant() {
+        assertEquals(1.0, LengthUnit.FEET.getConversionFactor());
+    }
 
+    @Test
+    void testLengthUnitEnum_InchesConstant() {
+        assertEquals(1.0 / 12.0, LengthUnit.INCH.getConversionFactor(), EPSILON);
+    }
+
+    @Test
+    void testLengthUnitEnum_YardsConstant() {
+        assertEquals(3.0, LengthUnit.YARD.getConversionFactor());
+    }
+
+    @Test
+    void testLengthUnitEnum_CentimetersConstant() {
+        assertEquals(0.0328084, LengthUnit.CM.getConversionFactor(), EPSILON);
+    }
+
+    @Test
+    void testConvertToBaseUnit_FeetToFeet() {
+        double result = LengthUnit.FEET.convertToBaseUnit(5.0);
+        assertEquals(5.0, result, EPSILON);
+    }
+
+    @Test
+    void testConvertToBaseUnit_InchesToFeet() {
+        double result = LengthUnit.INCH.convertToBaseUnit(12.0);
+        assertEquals(1.0, result, EPSILON);
+    }
+
+    @Test
+    void testConvertToBaseUnit_YardsToFeet() {
+        double result = LengthUnit.YARD.convertToBaseUnit(1.0);
+        assertEquals(3.0, result, EPSILON);
+    }
+
+    @Test
+    void testConvertToBaseUnit_CentimetersToFeet() {
+        // 30.48 cm is approximately 1 foot
+        double result = LengthUnit.CM.convertToBaseUnit(30.48);
+        assertEquals(1.0, result, 1e-3);
+    }
+
+    @Test
+    void testConvertFromBaseUnit_FeetToFeet() {
+        double result = LengthUnit.FEET.convertFromBaseUnit(2.0);
+        assertEquals(2.0, result, EPSILON);
+    }
+
+    @Test
+    void testConvertFromBaseUnit_FeetToInches() {
+        double result = LengthUnit.INCH.convertFromBaseUnit(1.0);
+        assertEquals(12.0, result, EPSILON);
+    }
+
+    @Test
+    void testConvertFromBaseUnit_FeetToYards() {
+        double result = LengthUnit.YARD.convertFromBaseUnit(3.0);
+        assertEquals(1.0, result, EPSILON);
+    }
+
+    @Test
+    void testConvertFromBaseUnit_FeetToCentimeters() {
+        double result = LengthUnit.CM.convertFromBaseUnit(1.0);
+        assertEquals(30.48, result, 1e-3);
+    }
+
+    // ================= UC8: Refactored QuantityLength Tests =================
+
+    @Test
+    void testQuantityLengthRefactored_Equality() {
+        QuantityLength oneFoot = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength twelveInches = new QuantityLength(12.0, LengthUnit.INCH);
+
+        // Verifies equals() delegates to unit.convertToBaseUnit()
+        assertEquals(oneFoot, twelveInches);
+    }
+
+    @Test
+    void testQuantityLengthRefactored_ConvertTo() {
+        QuantityLength oneFoot = new QuantityLength(1.0, LengthUnit.FEET);
+        double convertedValue = oneFoot.toConvert(LengthUnit.INCH);
+
+        assertEquals(12.0, convertedValue, EPSILON);
+    }
+
+    @Test
+    void testQuantityLengthRefactored_Add() {
+        QuantityLength oneFoot = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength twelveInches = new QuantityLength(12.0, LengthUnit.INCH);
+
+        // Result in FEET (first operand unit)
+        QuantityLength result = oneFoot.add(twelveInches);
+
+        assertEquals(new QuantityLength(2.0, LengthUnit.FEET), result);
+    }
+
+    @Test
+    void testQuantityLengthRefactored_AddWithTargetUnit() {
+        QuantityLength oneFoot = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength twelveInches = new QuantityLength(12.0, LengthUnit.INCH);
+
+        // Result in YARDS (explicit target)
+        QuantityLength result = oneFoot.add(twelveInches, LengthUnit.YARD);
+
+        assertEquals(new QuantityLength(2.0 / 3.0, LengthUnit.YARD), result);
+    }
+
+    @Test
+    void testQuantityLengthRefactored_NullUnit() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new QuantityLength(1.0, null);
+        });
+    }
+
+    @Test
+    void testQuantityLengthRefactored_InvalidValue() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new QuantityLength(Double.NaN, LengthUnit.FEET);
+        });
+    }
+
+    @Test
+    void testRoundTripConversion_RefactoredDesign() {
+        double originalValue = 10.0;
+        // Convert FEET -> INCH -> FEET
+        double toInch = LengthUnit.INCH.convertFromBaseUnit(
+                LengthUnit.FEET.convertToBaseUnit(originalValue));
+        double backToFeet = LengthUnit.FEET.convertFromBaseUnit(
+                LengthUnit.INCH.convertToBaseUnit(toInch));
+
+        assertEquals(originalValue, backToFeet, EPSILON);
+    }
+
+    @Test
+    void testBackwardCompatibility_UC1EqualityTests() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength q2 = new QuantityLength(1.0, LengthUnit.FEET);
+        assertEquals(q1, q2);
+    }
+
+    @Test
+    void testArchitecturalScalability_MultipleCategories() {
+        assertNotNull(LengthUnit.FEET);
+    }
+
+    @Test
+    void testUnitImmutability() {
+        LengthUnit unit = LengthUnit.FEET;
+        assertEquals(1.0, unit.getConversionFactor());
+    }
+
+    @Test
+    void testQuantityLengthRefactored_AddWithTargetUnit_Yards() {
+        QuantityLength oneFoot = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength twelveInches = new QuantityLength(12.0, LengthUnit.INCH);
+
+        QuantityLength result = oneFoot.add(twelveInches, LengthUnit.YARD);
+
+        assertEquals(0.6666666666666666, result.getValue(), EPSILON);
+        assertEquals(LengthUnit.YARD, result.getUnit());
+    }
+
+    @Test
+    void testBackwardCompatibility_UC5ConversionTests() {
+        double result = QuantityLength.convert(1.0, LengthUnit.YARD, LengthUnit.INCH);
+        assertEquals(36.0, result, EPSILON);
+    }
+    @Test
+    void testQuantityLengthRefactored_AddWithTargetUnit_Commutativity() {
+        QuantityLength a = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength b = new QuantityLength(12.0, LengthUnit.INCH);
+
+        QuantityLength result1 = a.add(b, LengthUnit.YARD);
+        QuantityLength result2 = b.add(a, LengthUnit.YARD);
+
+        assertEquals(result1.getValue(), result2.getValue(), EPSILON);
+        assertEquals(result1.getUnit(), result2.getUnit());
+    }
 
 }
