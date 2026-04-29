@@ -60,6 +60,46 @@ public class Quantity<U extends IMeasurable> {
 
         return new Quantity<>(result, targetUnit);
     }
+    // Subtraction
+    public Quantity<U> subtract(Quantity<U> other, U targetUnit) {
+
+        if (other == null || targetUnit == null)
+            throw new NullPointerException(
+                    "Quantity and Target Unit must not be empty");
+
+        if (!this.unit.getClass().equals(other.unit.getClass()))
+            throw new IllegalArgumentException(
+                    "Cannot operate on different measurement categories");
+
+        double thisBase = this.unit.convertToBaseUnit(this.getValue());
+        double otherBase = other.unit.convertToBaseUnit(other.getValue());
+
+        double baseSubtraction = thisBase - otherBase;
+        double result = targetUnit.convertFromBaseUnit(baseSubtraction);
+
+        return new Quantity<>(result, targetUnit);
+    }
+
+    // Divide
+    public double divide(Quantity<U> other) {
+
+        if (other == null)
+            throw new NullPointerException(
+                    "Quantity and Target Unit must not be empty");
+
+        if (!this.unit.getClass().equals(other.unit.getClass()))
+            throw new IllegalArgumentException(
+                    "Cannot operate on different measurement categories");
+
+        double thisBase = this.unit.convertToBaseUnit(this.getValue());
+        double otherBase = other.unit.convertToBaseUnit(other.getValue());
+
+        if (Math.abs(otherBase) < EPSILON)
+            throw new ArithmeticException("Can not divisible by 0 or less");
+
+        return thisBase / otherBase;
+    }
+
 
     // Equality Check
     @Override
