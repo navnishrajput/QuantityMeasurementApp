@@ -31,6 +31,16 @@ public enum VolumeUnit implements IMeasurable {
         return value / toLitreFactor;
     }
 
+    @Override
+    public String getMeasurementType() {
+        return "VOLUME";
+    }
+
+    @Override
+    public IMeasurable getUnitInstance(String name) {
+        return VolumeUnit.valueOf(name.toUpperCase());
+    }
+
     private void validate(double value) {
         if (!Double.isFinite(value)) {
             throw new IllegalArgumentException("Invalid value");

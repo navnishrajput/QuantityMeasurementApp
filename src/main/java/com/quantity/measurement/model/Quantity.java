@@ -20,16 +20,19 @@ public class Quantity<U extends IMeasurable> {
         this.unit = unit;
     }
 
-    public Quantity<U> toConvert(U targetUnit) {
+    // UC15: Modified to accept IMeasurable for N-Tier compatibility
+    @SuppressWarnings("unchecked")
+    public Quantity<U> toConvert(IMeasurable targetUnit) {
         if (targetUnit == null)
             throw new NullPointerException("Target unit cannot be null");
 
         double baseValue = unit.convertToBaseUnit(value);
         double converted = targetUnit.convertFromBaseUnit(baseValue);
 
-        return new Quantity<>(converted, targetUnit);
+        return new Quantity<>(converted, (U) targetUnit);
     }
 
+    // UC13: Centralized arithmetic operation enum with lambda dispatch
     private enum ArithmeticOperation {
         ADD((a, b) -> a + b),
 
@@ -41,6 +44,9 @@ public class Quantity<U extends IMeasurable> {
             }
             return a / b;
         });
+
+        // UC15: MULTIPLY - reserved for future use, not currently exposed in API
+        // MULTIPLY((a, b) -> a * b);
 
         private final DoubleBinaryOperator op;
 
@@ -61,7 +67,9 @@ public class Quantity<U extends IMeasurable> {
         return unit;
     }
 
-    private void validate(Quantity<U> other, U target, boolean requireTarget) {
+    // UC13: Centralized validation - shared by add, subtract, divide
+    @SuppressWarnings("unchecked")
+    private void validate(Quantity<?> other, IMeasurable target, boolean requireTarget) {
         if (other == null) {
             throw new NullPointerException("Quantity must not be null");
         }
@@ -75,48 +83,64 @@ public class Quantity<U extends IMeasurable> {
         }
     }
 
+    // UC13: Converts value to base unit using unit's conversion factor
     private double base(U unit, double value) {
         return unit.convertToBaseUnit(value);
     }
 
+    // UC13: Performs arithmetic operation on base unit values
     private double operate(Quantity<U> other, ArithmeticOperation op) {
         double a = base(this.unit, this.value);
         double b = base(other.unit, other.value);
         return op.apply(a, b);
     }
 
-    public Quantity<U> add(Quantity<U> other) {
+    // UC13: Rounding helper - currently commented, rounding done by caller if needed
+    // private double round(double value) {
+    //     return Math.round(value * 1000000.0) / 1000000.0;
+    // }
+
+    @SuppressWarnings("unchecked")
+    public Quantity<U> add(Quantity<?> other) {
         return add(other, this.unit);
     }
 
-    public Quantity<U> add(Quantity<U> other, U targetUnit) {
-        validate(other, targetUnit, true);
+    @SuppressWarnings("unchecked")
+    public Quantity<U> add(Quantity<?> other, IMeasurable targetUnit) {
         this.unit.validateOperationSupport("ADD");
+        validate(other, targetUnit, true);
 
-        double resultBase = operate(other, ArithmeticOperation.ADD);
+        Quantity<U> typedOther = (Quantity<U>) other;
+        double resultBase = operate(typedOther, ArithmeticOperation.ADD);
         double converted = targetUnit.convertFromBaseUnit(resultBase);
 
-        return new Quantity<>(converted, targetUnit);
+        return new Quantity<>(converted, (U) targetUnit);
     }
 
-    public Quantity<U> subtract(Quantity<U> other) {
+    @SuppressWarnings("unchecked")
+    public Quantity<U> subtract(Quantity<?> other) {
         return subtract(other, this.unit);
     }
 
-    public Quantity<U> subtract(Quantity<U> other, U targetUnit) {
-        validate(other, targetUnit, true);
+    @SuppressWarnings("unchecked")
+    public Quantity<U> subtract(Quantity<?> other, IMeasurable targetUnit) {
         this.unit.validateOperationSupport("SUBTRACT");
+        validate(other, targetUnit, true);
 
-        double resultBase = operate(other, ArithmeticOperation.SUBTRACT);
+        Quantity<U> typedOther = (Quantity<U>) other;
+        double resultBase = operate(typedOther, ArithmeticOperation.SUBTRACT);
         double converted = targetUnit.convertFromBaseUnit(resultBase);
 
-        return new Quantity<>(converted, targetUnit);
+        return new Quantity<>(converted, (U) targetUnit);
     }
 
-    public double divide(Quantity<U> other) {
-        validate(other, null, false);
+    @SuppressWarnings("unchecked")
+    public double divide(Quantity<?> other) {
         this.unit.validateOperationSupport("DIVIDE");
-        return operate(other, ArithmeticOperation.DIVIDE);
+        validate(other, null, false);
+
+        Quantity<U> typedOther = (Quantity<U>) other;
+        return operate(typedOther, ArithmeticOperation.DIVIDE);
     }
 
     @Override
@@ -128,6 +152,7 @@ public class Quantity<U extends IMeasurable> {
 
         Quantity<?> other = (Quantity<?>) obj;
 
+        // UC10: Cross-category prevention via unit class comparison
         if (!this.unit.getClass().equals(other.unit.getClass())) {
             return false;
         }

@@ -8,6 +8,12 @@ public interface IMeasurable {
 
     double convertFromBaseUnit(double value);
 
+    // UC15: Added for N-Tier architecture - used by service layer for DTO mapping
+    String getMeasurementType();
+
+    // UC15: Added for N-Tier architecture - used by service layer for unit resolution
+    IMeasurable getUnitInstance(String name);
+
     @FunctionalInterface
     interface SupportsArithmetic {
         boolean isSupported();
@@ -20,5 +26,6 @@ public interface IMeasurable {
     }
 
     default void validateOperationSupport(String operation) {
+        // Default no-op, overridden by TemperatureUnit
     }
 }

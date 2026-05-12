@@ -32,6 +32,17 @@ public enum LengthUnit implements IMeasurable {
         return value / toFeetFactor;
     }
 
+    @Override
+    public String getMeasurementType() {
+        return "LENGTH";
+    }
+
+    @Override
+    public IMeasurable getUnitInstance(String name) {
+        return LengthUnit.valueOf(name.toUpperCase());
+    }
+
+    // UC14: Validation helper - used internally for finiteness check
     private void validate(double value) {
         if (!Double.isFinite(value)) {
             throw new IllegalArgumentException("Invalid value");

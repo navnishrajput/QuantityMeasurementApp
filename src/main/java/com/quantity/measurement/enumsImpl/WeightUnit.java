@@ -6,7 +6,8 @@ public enum WeightUnit implements IMeasurable {
 
     KILOGRAM(1.0),
     GRAM(0.001),
-    POUND(1.0 / 2.20462);//
+    POUND(1.0 / 2.20462);
+
     private final double toKilogramFactor;
 
     WeightUnit(double toKilogramFactor) {
@@ -28,6 +29,16 @@ public enum WeightUnit implements IMeasurable {
     public double convertFromBaseUnit(double value) {
         validate(value);
         return value / toKilogramFactor;
+    }
+
+    @Override
+    public String getMeasurementType() {
+        return "WEIGHT";
+    }
+
+    @Override
+    public IMeasurable getUnitInstance(String name) {
+        return WeightUnit.valueOf(name.toUpperCase());
     }
 
     private void validate(double value) {

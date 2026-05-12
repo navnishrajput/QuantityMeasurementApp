@@ -18,17 +18,18 @@ public enum TemperatureUnit implements IMeasurable {
             celsius -> celsius + 273.15);
 
     private final double conversionFactor;
-    private final Function<Double, Double> toCelsius;
-    private final Function<Double, Double> fromCelsius;
+    private final Function<Double, Double> toBaseUnit;
+    private final Function<Double, Double> fromBaseUnit;
 
+    // UC14: Temperature does not support arithmetic operations
     private static final SupportsArithmetic supportsArithmetic = () -> false;
 
     TemperatureUnit(double conversionFactor,
-                    Function<Double, Double> toCelsius,
-                    Function<Double, Double> fromCelsius) {
+                    Function<Double, Double> toBaseUnit,
+                    Function<Double, Double> fromBaseUnit) {
         this.conversionFactor = conversionFactor;
-        this.toCelsius = toCelsius;
-        this.fromCelsius = fromCelsius;
+        this.toBaseUnit = toBaseUnit;
+        this.fromBaseUnit = fromBaseUnit;
     }
 
     @Override
@@ -39,13 +40,13 @@ public enum TemperatureUnit implements IMeasurable {
     @Override
     public double convertToBaseUnit(double value) {
         validate(value);
-        return toCelsius.apply(value);
+        return toBaseUnit.apply(value);
     }
 
     @Override
     public double convertFromBaseUnit(double value) {
         validate(value);
-        return fromCelsius.apply(value);
+        return fromBaseUnit.apply(value);
     }
 
     @Override
@@ -59,6 +60,16 @@ public enum TemperatureUnit implements IMeasurable {
                 "Temperature does not support " + operation +
                         " operation. Arithmetic operations are not meaningful for absolute temperatures."
         );
+    }
+
+    @Override
+    public String getMeasurementType() {
+        return "TEMPERATURE";
+    }
+
+    @Override
+    public IMeasurable getUnitInstance(String name) {
+        return TemperatureUnit.valueOf(name.toUpperCase());
     }
 
     private void validate(double value) {
