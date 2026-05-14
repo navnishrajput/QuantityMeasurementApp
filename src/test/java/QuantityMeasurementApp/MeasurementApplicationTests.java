@@ -1,20 +1,20 @@
 package QuantityMeasurementApp;
 
-import com.quantity.measurement.dto.QuantityDTO;
-import com.quantity.measurement.enums.IMeasurable;
-import com.quantity.measurement.enumsImpl.TemperatureUnit;
-import com.quantity.measurement.enumsImpl.VolumeUnit;
-import com.quantity.measurement.enumsImpl.WeightUnit;
-import com.quantity.measurement.model.Quantity;
-import com.quantity.measurement.model.QuantityWeight;
-import com.quantity.measurement.model.QuantityLength;
-import com.quantity.measurement.enumsImpl.LengthUnit;
-import com.quantity.measurement.repository.IQuantityMeasurementRepository;
-import com.quantity.measurement.repository.QuantityMeasurementCacheRepository;
-import com.quantity.measurement.service.IQuantityMeasurementService;
-import com.quantity.measurement.serviceImpl.QuantityMeasurementServiceImpl;
-import com.quantity.measurement.controller.QuantityMeasurementController;
-import com.quantity.measurement.entity.QuantityMeasurementEntity;
+import com.app.quantitymeasurement.dto.QuantityDTO;
+import com.app.quantitymeasurement.enums.IMeasurable;
+import com.app.quantitymeasurement.enumsImpl.TemperatureUnit;
+import com.app.quantitymeasurement.enumsImpl.VolumeUnit;
+import com.app.quantitymeasurement.enumsImpl.WeightUnit;
+import com.app.quantitymeasurement.model.Quantity;
+import com.app.quantitymeasurement.model.QuantityWeight;
+import com.app.quantitymeasurement.model.QuantityLength;
+import com.app.quantitymeasurement.enumsImpl.LengthUnit;
+import com.app.quantitymeasurement.repository.IQuantityMeasurementRepository;
+import com.app.quantitymeasurement.repository.QuantityMeasurementCacheRepository;
+import com.app.quantitymeasurement.service.IQuantityMeasurementService;
+import com.app.quantitymeasurement.serviceImpl.QuantityMeasurementServiceImpl;
+import com.app.quantitymeasurement.controller.QuantityMeasurementController;
+import com.app.quantitymeasurement.entity.QuantityMeasurementEntity;
 
 import org.junit.jupiter.api.Test;
 
