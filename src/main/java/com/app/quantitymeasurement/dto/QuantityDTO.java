@@ -1,14 +1,32 @@
 package com.app.quantitymeasurement.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class QuantityDTO {
 
-    private final double value;
-    private final String unit;
-    private final String measurementType;
-    private final boolean hasError;
-    private final String errorMessage;
+    @NotNull(message = "Value cannot be null")
+    private Double value;
 
-    public QuantityDTO(double value, String unit, String measurementType) {
+    @NotEmpty(message = "Unit cannot be empty")
+    private String unit;
+
+    @NotEmpty(message = "Measurement type cannot be empty")
+    @Pattern(regexp = "^(LENGTH|WEIGHT|VOLUME|TEMPERATURE)$",
+            message = "Measurement type must be LENGTH, WEIGHT, VOLUME, or TEMPERATURE")
+    private String measurementType;
+
+    private boolean hasError;
+    private String errorMessage;
+
+    public QuantityDTO(Double value, String unit, String measurementType) {
         this.value = value;
         this.unit = unit;
         this.measurementType = measurementType;
@@ -22,23 +40,5 @@ public class QuantityDTO {
         this.measurementType = null;
         this.hasError = true;
         this.errorMessage = errorMessage;
-    }
-
-    public double getValue() { return value; }
-
-    public String getUnit() { return unit; }
-
-    public String getMeasurementType() { return measurementType; }
-
-    public boolean hasError() { return hasError; }
-
-    public String getErrorMessage() { return errorMessage; }
-
-    @Override
-    public String toString() {
-        if (hasError) {
-            return "Error: " + errorMessage;
-        }
-        return "Quantity(" + value + ", " + unit + ")";
     }
 }

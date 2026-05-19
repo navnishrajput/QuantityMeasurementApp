@@ -1,6 +1,6 @@
 package com.app.quantitymeasurement.repository;
 
-import com.app.quantitymeasurement.entity.QuantityMeasurementEntity;
+import com.app.quantitymeasurement.model.QuantityMeasurementEntity;
 import com.app.quantitymeasurement.exception.DatabaseException;
 import com.app.quantitymeasurement.database.ConnectionPool;
 import org.slf4j.Logger;
